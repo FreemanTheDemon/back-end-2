@@ -7,7 +7,7 @@ module.exports = {
         res.status(200).send(movies);
     },
     createMovie: (req, res) => {
-        const { title, rating, imageURL } = req.body;
+        const {title, rating, imageURL} = req.body;
         let newMovie = {
             title,
             rating,
@@ -17,5 +17,29 @@ module.exports = {
         movies.push(newMovie);
         res.status(200).send(movies);
         globalId++;
+    },
+    updateMovie: (req,  res) => {
+        const {id} = req.params;
+        const {type} = req.body;
+
+        let index = movies.findIndex(elem => +elem.id === +id);
+
+        if (movies[index].rating === 5 && type === 'plus') {
+            res.status(400).send('cannot go above 5 stars');
+        } else if (movies[index].rating === 1 && type === 'minus') {
+            res.status(400).send('cannot go below 1 star');
+        } else if (type === 'plus') {
+            movies[index].rating++;
+            res.status(200).send(movies);
+        } else if (type === 'minus') {
+            movies[index].rating--;
+            res.status(200).send(movies);
+        }
+    },
+    deleteMovie: (req, res) => {
+        const {id} = req.params;
+        let index = movies.findIndex(elem => +elem.id === +id);
+        movies.splice(index, 1);
+        res.status(200).send(movies);
     }
 };
